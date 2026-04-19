@@ -3,143 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>طقس مصر Pro</title>
+    <title>طقس مصر - توقعات دقيقة</title>
     
     <link rel="manifest" href="https://progressier.app/qtPhP1TrJ4pyRHjWohIc/progressier.json"/>
     <script defer src="https://progressier.app/qtPhP1TrJ4pyRHjWohIc/script.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { min-height: 100vh; padding: 15px; position: relative; overflow-x: hidden; background: #1a202c; }
-        .weather-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; transition: all 0.8s ease; background-size: 400% 400% !important; animation: gradientBG 15s ease infinite; }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', 'Tahoma', sans-serif;
+            min-height: 100vh;
+            padding: 15px;
+            position: relative;
+            overflow-x: hidden;
+            background-color: #1a202c;
+        }
+        
+        .weather-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            transition: all 0.5s ease;
+        }
+        
         .bg-clear { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
         .bg-clouds { background: linear-gradient(135deg, #4a5568 0%, #718096 100%); }
         .bg-rain { background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); }
-        .container { max-width: 500px; margin: 0 auto; position: relative; z-index: 1; }
-        .search-box { display: flex; gap: 8px; margin-bottom: 20px; }
-        .search-box input { flex: 1; padding: 14px 20px; border: none; border-radius: 30px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); color: #fff; border: 1px solid rgba(255,255,255,0.2); outline: none; }
-        .search-box button { padding: 0 20px; border: none; border-radius: 30px; background: #ffaa44; color: #1a202c; font-weight: bold; cursor: pointer; }
-        .weather-card { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(20px); border-radius: 40px; padding: 30px 20px; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.15); text-align: center; color: white; }
-        .temp-value { font-size: 80px; font-weight: 700; line-height: 1; }
-        .details-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 25px; }
-        .detail-card { background: rgba(255, 255, 255, 0.08); padding: 15px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; }
-        .section-title { color: white; font-size: 16px; margin: 20px 10px 10px 0; }
-        .horizontal-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-        .scroll-item { min-width: 85px; background: rgba(0, 0, 0, 0.3); border-radius: 25px; padding: 15px 10px; text-align: center; color: white; }
-        .loading-screen { text-align: center; color: white; padding: 50px; }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .weather-card {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(12px);
+            border-radius: 35px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .location-section { text-align: center; margin-bottom: 20px; }
+        .city-name { font-size: 24px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .temp-main { text-align: center; margin: 15px 0; }
+        .temp-value { font-size: 64px; font-weight: bold; }
+        .weather-desc { font-size: 18px; color: #ffeaa7; }
+        
+        .details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .detail-item { background: rgba(0, 0, 0, 0.3); border-radius: 15px; padding: 8px; }
+        .detail-label { font-size: 11px; opacity: 0.7; }
+        .detail-value { font-size: 14px; font-weight: bold; }
+        
+        .hourly-section, .forecast-section, .extra-info, .medical-tips {
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            padding: 15px;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .hourly-list, .forecast-list { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .hourly-item, .forecast-day {
+            min-width: 80px;
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 10px;
+        }
+
+        .hourly-title { color: white; font-size: 14px; margin-bottom: 12px; border-right: 3px solid #ffaa44; padding-right: 8px; }
+        
+        .extra-info { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .info-card { background: rgba(255,255,255,0.1); border-radius: 18px; padding: 10px; text-align: center; }
+
+        .search-box { display: flex; gap: 8px; margin-bottom: 15px; }
+        .search-box input { flex: 1; padding: 12px 16px; border: none; border-radius: 30px; background: rgba(255, 255, 255, 0.2); color: #fff; }
+        .search-box button { padding: 12px 18px; border: none; border-radius: 30px; background: #ffaa44; font-weight: bold; cursor: pointer; }
+        
+        .loading { text-align: center; padding: 40px; color: white; }
+        .flood-alert { background: rgba(200, 50, 50, 0.85); border-radius: 20px; padding: 12px; margin-bottom: 15px; text-align: center; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.9; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
     <div id="weatherBg" class="weather-bg bg-clear"></div>
+    
     <div class="container">
         <div class="search-box">
-            <input type="text" id="cityInput" placeholder="بحث عن مدينة...">
+            <input type="text" id="cityInput" placeholder="🔍 اكتب اسم مدينة أو حي...">
             <button onclick="searchCity()">بحث</button>
-            <button onclick="getMyLocation()" style="background: rgba(255,255,255,0.2); color: white;">📍</button>
+            <button onclick="getMyLocation()">📍 موقعي</button>
         </div>
+        
         <div id="weatherContent">
-            <div class="loading-screen">
-                <h2>🌍 جاري جلب البيانات...</h2>
-                <p>يرجى تفعيل أذونات الموقع والإشعارات</p>
+            <div class="loading">
+                <div style="font-size: 30px;">🌍</div>
+                <div>جاري تحديد موقعك وطلب الأذونات...</div>
             </div>
         </div>
     </div>
 
     <script>
-        const daysAr = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
-        const monthsAr = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
-
-        // 1. طلب إذن الإشعارات عند التشغيل
+        // دالة طلب إذن الإشعارات
         function initNotifications() {
             if ("Notification" in window) {
                 Notification.requestPermission();
             }
         }
 
-        // 2. إرسال إشعار بالحرارة
-        function sendWeatherNotification(temp, city) {
+        // دالة إرسال الإشعار
+        function sendWeatherNotification(temp, city, desc) {
             if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("تحديث الطقس", {
-                    body: `درجة الحرارة الآن في ${city} هي ${temp}°C`,
+                new Notification(`طقس ${city} الآن`, {
+                    body: `درجة الحرارة: ${temp}°C - ${desc}`,
                     icon: "https://cdn-icons-png.flaticon.com/512/252/252035.png"
                 });
             }
         }
 
+        function getArabicDay(date) {
+            const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+            return days[date.getDay()];
+        }
+        
+        function getArabicMonth(date) {
+            const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+            return months[date.getMonth()];
+        }
+
+        function getWeatherDescription(code, isDay = true) {
+            const map = {
+                0: "☀️ مشمس", 1: "🌤️ قليل السحب", 2: "⛅ غائم جزئياً", 3: "☁️ غائم",
+                45: "🌫️ ضباب", 48: "🌫️ ضباب كثيف", 51: "🌧️ رذاذ", 61: "🌧️ مطر خفيف",
+                63: "🌧️ مطر", 80: "🌦️ زخات مطر", 95: "⛈️ عاصفة رعدية"
+            };
+            return map[code] || "🌡️ متغير";
+        }
+
+        function setBackground(code) {
+            const bg = document.getElementById('weatherBg');
+            bg.className = 'weather-bg';
+            if (code === 0) bg.classList.add('bg-clear');
+            else if (code <= 3) bg.classList.add('bg-clouds');
+            else bg.classList.add('bg-rain');
+        }
+
         async function fetchWeather(lat, lon) {
             const content = document.getElementById('weatherContent');
+            content.innerHTML = `<div class="loading">🌍 جاري جلب البيانات...</div>`;
+            
             try {
                 const locResp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ar`);
                 const locData = await locResp.json();
-                const cityName = locData.address.city || locData.address.town || "موقعي الحالى";
+                const city = locData.address.city || locData.address.town || "موقعي";
 
-                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code&daily=sunrise,sunset&timezone=auto`;
-                const response = await fetch(weatherUrl);
-                const data = await response.json();
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max,uv_index_max&timezone=auto&forecast_days=7`;
+                const resp = await fetch(url);
+                const data = await resp.json();
 
                 const temp = Math.round(data.current.temperature_2m);
-                renderWeather(data, cityName);
-                
-                // إرسال الإشعار فور جلب البيانات
-                sendWeatherNotification(temp, cityName);
-            } catch (error) {
-                content.innerHTML = `<div class="weather-card">❌ فشل جلب البيانات</div>`;
+                const desc = getWeatherDescription(data.current.weather_code);
+                setBackground(data.current.weather_code);
+
+                // إرسال الإشعار
+                sendWeatherNotification(temp, city, desc);
+
+                renderUI(data, city, locData.address.suburb || "");
+            } catch (err) {
+                content.innerHTML = `<div class="loading">❌ خطأ في الاتصال</div>`;
             }
         }
 
-        function renderWeather(data, cityName) {
+        function renderUI(data, city, district) {
             const current = data.current;
-            const now = new Date();
-            const bg = document.getElementById('weatherBg');
-            bg.className = 'weather-bg ' + (current.weather_code > 50 ? 'bg-rain' : current.weather_code > 0 ? 'bg-clouds' : 'bg-clear');
-
-            document.getElementById('weatherContent').innerHTML = `
-                <div class="weather-card">
-                    <h2>📍 ${cityName}</h2>
-                    <div class="temp-value">${Math.round(current.temperature_2m)}°</div>
-                    <p style="margin-bottom:20px;">${daysAr[now.getDay()]}، ${now.getDate()} ${monthsAr[now.getMonth()]}</p>
-                    <div class="details-grid">
-                        <div class="detail-card"><span>💧 الرطوبة</span><strong>${current.relative_humidity_2m}%</strong></div>
-                        <div class="detail-card"><span>💨 الرياح</span><strong>${current.wind_speed_10m} كم/س</strong></div>
-                        <div class="detail-card"><span>🌅 الشروق</span><strong>${data.daily.sunrise[0].split('T')[1]}</strong></div>
-                        <div class="detail-card"><span>🌇 الغروب</span><strong>${data.daily.sunset[0].split('T')[1]}</strong></div>
-                    </div>
-                </div>
-                <h3 class="section-title">⏰ الساعات القادمة</h3>
-                <div class="horizontal-scroll" id="hourlyList"></div>
-            `;
+            const today = new Date();
             
-            let hourlyHTML = '';
-            for(let i=0; i<12; i++) {
-                hourlyHTML += `
-                    <div class="scroll-item">
-                        <div>${new Date(data.hourly.time[i]).getHours()}:00</div>
+            let hourlyHtml = '';
+            for (let i = 0; i < 12; i++) {
+                const hour = new Date(data.hourly.time[i]).getHours();
+                hourlyHtml += `
+                    <div class="hourly-item">
+                        <div style="font-size:12px;">${hour}:00</div>
+                        <div style="font-size:20px; margin:5px 0;">${getWeatherDescription(data.hourly.weather_code[i]).split(' ')[0]}</div>
                         <div style="font-weight:bold;">${Math.round(data.hourly.temperature_2m[i])}°</div>
                     </div>`;
             }
-            document.getElementById('hourlyList').innerHTML = hourlyHTML;
+
+            document.getElementById('weatherContent').innerHTML = `
+                <div class="weather-card">
+                    <div class="location-section">
+                        <div class="city-name">📍 ${city} 🇪🇬</div>
+                        ${district ? `<div style="color:#ffaa88; font-size:14px;">${district}</div>` : ''}
+                        <div style="font-size:13px; opacity:0.7;">${getArabicDay(today)} ${today.getDate()} ${getArabicMonth(today)}</div>
+                    </div>
+                    <div class="temp-main">
+                        <div class="temp-value">${Math.round(current.temperature_2m)}°C</div>
+                        <div class="weather-desc">${getWeatherDescription(current.weather_code)}</div>
+                        <div style="font-size:14px;">يحس كأنه ${Math.round(current.apparent_temperature)}°</div>
+                    </div>
+                    <div class="details">
+                        <div class="detail-item"><div class="detail-label">💧 رطوبة</div><div class="detail-value">${current.relative_humidity_2m}%</div></div>
+                        <div class="detail-item"><div class="detail-label">💨 رياح</div><div class="detail-value">${Math.round(current.wind_speed_10m)} ك/س</div></div>
+                        <div class="detail-item"><div class="detail-label">🌡️ عظمى</div><div class="detail-value">${Math.round(data.daily.temperature_2m_max[0])}°</div></div>
+                        <div class="detail-item"><div class="detail-label">🌙 صغرى</div><div class="detail-value">${Math.round(data.daily.temperature_2m_min[0])}°</div></div>
+                    </div>
+                </div>
+
+                <div class="hourly-section">
+                    <div class="hourly-title">⏰ الساعات القادمة</div>
+                    <div class="hourly-list">${hourlyHtml}</div>
+                </div>
+
+                <div class="extra-info">
+                    <div class="info-card"><div class="info-label">☀️ UV Index</div><div class="info-value">${data.daily.uv_index_max[0]}</div></div>
+                    <div class="info-card"><div class="info-label">🌅 شروق</div><div class="info-value">${data.daily.sunrise[0].split('T')[1]}</div></div>
+                    <div class="info-card"><div class="info-label">🌇 غروب</div><div class="info-value">${data.daily.sunset[0].split('T')[1]}</div></div>
+                    <div class="info-card"><div class="info-label">🌧️ أمطار</div><div class="info-value">${data.daily.precipitation_probability_max[0]}%</div></div>
+                </div>
+            `;
         }
 
         function getMyLocation() {
+            initNotifications(); // طلب إذن الإشعارات عند الضغط
+            if (!navigator.geolocation) return alert("المتصفح لا يدعم الموقع");
             navigator.geolocation.getCurrentPosition(
-                (p) => fetchWeather(p.coords.latitude, p.coords.longitude),
-                () => { alert("يرجى السماح بالوصول للموقع"); fetchWeather(30.04, 31.23); },
-                { enableHighAccuracy: true }
+                (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
+                () => alert("يرجى تفعيل GPS")
             );
         }
 
         function searchCity() {
-            const city = document.getElementById('cityInput').value;
-            fetch(`https://nominatim.openstreetmap.org/search?q=${city}&format=json&limit=1`)
-                .then(r => r.json()).then(d => d.length ? fetchWeather(d[0].lat, d[0].lon) : alert("غير موجودة"));
+            const input = document.getElementById('cityInput').value;
+            if (!input) return;
+            fetch(`https://nominatim.openstreetmap.org/search?q=${input},+Egypt&format=json&limit=1`)
+                .then(r => r.json()).then(d => d.length ? fetchWeather(d[0].lat, d[0].lon) : alert("لم نجد المدينة"));
         }
 
-        window.onload = () => {
-            initNotifications();
-            getMyLocation();
-        };
+        window.onload = getMyLocation;
     </script>
 </body>
 </html>
